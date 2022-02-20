@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/codestates/EATO.git/static/css/main.742b2d64.css",
+    "main.js": "/codestates/EATO.git/static/js/main.a8bb49eb.js",
+    "static/js/787.c4e7f8f9.chunk.js": "/codestates/EATO.git/static/js/787.c4e7f8f9.chunk.js",
+    "static/media/intro-map.png": "/codestates/EATO.git/static/media/intro-map.2c52f3acb087b2d33e3e.png",
+    "static/media/text_1.png": "/codestates/EATO.git/static/media/text_1.a256d3d065ababae6d13.png",
+    "static/media/text_3.png": "/codestates/EATO.git/static/media/text_3.9a5f56754c5d7d9bca35.png",
+    "static/media/intro-card.png": "/codestates/EATO.git/static/media/intro-card.9d014eb96246f0236564.png",
+    "static/media/Logo.png": "/codestates/EATO.git/static/media/Logo.1dd0c7fc36d223481ea7.png",
+    "static/media/login_kakao_icon.png": "/codestates/EATO.git/static/media/login_kakao_icon.858bb3c773cb04c16983.png",
+    "static/media/Footer_Logo.png": "/codestates/EATO.git/static/media/Footer_Logo.9d5ca06739eaa50170ab.png",
+    "index.html": "/codestates/EATO.git/index.html",
+    "main.742b2d64.css.map": "/codestates/EATO.git/static/css/main.742b2d64.css.map",
+    "main.a8bb49eb.js.map": "/codestates/EATO.git/static/js/main.a8bb49eb.js.map",
+    "787.c4e7f8f9.chunk.js.map": "/codestates/EATO.git/static/js/787.c4e7f8f9.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.742b2d64.css",
+    "static/js/main.a8bb49eb.js"
+  ]
+}
