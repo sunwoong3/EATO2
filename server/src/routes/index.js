@@ -1,6 +1,8 @@
 import express from "express";
-const router = express.Router();
+
 import api from "#src/routes/api/index.js";
+
+const router = express.Router();
 
 router.use("/v2", api);
 

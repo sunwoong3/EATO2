@@ -1,6 +1,6 @@
 import React from "react";
-import Naver from "../../../images/login_naver_icon.png";
-import Kakao from "../../../images/login_kakao_icon.png";
+import Naver from "images/login_naver_icon.png";
+import Kakao from "images/login_kakao_icon.png";
 
 export default function SocialLogBtn() {
   return (

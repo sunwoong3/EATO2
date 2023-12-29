@@ -5,10 +5,14 @@ import protect from "#src/routes/middleware/index.js";
 
 const router = express.Router();
 // users
-// router.post("/signUp", controller.createUser, controller.validEmail);
+router.post("/signUp", controller.createUser);
 router.post("/login", controller.userLogin);
 router.get("/logout", protect, controller.logout);
 router.get("/:kana", controller.socialLogin);
+
+router.get("/", (req, res) => {
+  res.send(200);
+});
 
 // router
 //   .route("/userInfo")

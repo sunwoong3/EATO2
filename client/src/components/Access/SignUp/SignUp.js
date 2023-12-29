@@ -1,9 +1,27 @@
-import React from "react";
-import Logo from "../../../images/logo-signup.png";
-import ForkW from "../../../images/fork_white.png";
-import ForkR from "../../../images/fork_red.png";
+import React, { useState } from "react";
+import Logo from "images/logo-signup.png";
+import ForkW from "images/fork_white.png";
+import ForkR from "images/fork_red.png";
 import SocialLogBtn from "./SocialLogBtn";
+import api from "api";
+
 function SignUp() {
+  const [user, setUser] = useState({});
+
+  const handleClcikSignup = async () => {
+    await api.users.signUp(user);
+  };
+
+  const handleChangeUpdateUser = async (key, value) => {
+    console.log({ key });
+    console.log({ value });
+    const newInfo = {};
+    newInfo[key] = value;
+
+    const info = Object.assign(user, newInfo);
+    setUser(info);
+  };
+
   return (
     <main className="signin-up-wrapper">
       {/* 재사용 가능한 Left Page의 클래스명은 signin-up-left로 명명해놨음 */}
@@ -34,6 +52,9 @@ function SignUp() {
                 className="signup-input"
                 type="email"
                 placeholder="예) eato@gmail.com"
+                onChange={(e) =>
+                  handleChangeUpdateUser("email", e.target.value)
+                }
               ></input>
               <hr color="#DADADA" />
             </article>
@@ -47,6 +68,9 @@ function SignUp() {
                 minLength="1"
                 maxLength="6"
                 placeholder="영문 또는 한글 1-6자"
+                onChange={(e) =>
+                  handleChangeUpdateUser("nickname", e.target.value)
+                }
               ></input>
               <hr color="#DADADA" />
             </article>
@@ -60,6 +84,9 @@ function SignUp() {
                 minLength="8"
                 maxLength="16"
                 placeholder="영문, 숫자, 특수문자 조합 8-16자"
+                onChange={(e) =>
+                  handleChangeUpdateUser("password", e.target.value)
+                }
               ></input>
               <hr color="#DADADA" />
             </article>
@@ -80,19 +107,11 @@ function SignUp() {
 
           {/* 소셜 로그인 컨테이너 */}
           <article className="signup-social-container">
-            <div className="signup-btn">가입하기</div>
-            <SocialLogBtn />
+            <div className="signup-btn" onClick={() => handleClcikSignup()}>
+              가입하기
+            </div>
+            {/* <SocialLogBtn /> */}
           </article>
-          {/* 
-          * 소셜 회원가입 버튼 클릭시
-          1. 네이버 or 카카오 oauth 연결
-
-          * 가입하기 버튼 클릭시 
-          - 참고
-          https://github.com/codestates/sweatmate/blob/9fc177e5dc605d0c686f8570a16e32a400d9fbcb/client/src/components/Signing.jsx
-          1. 입력 데이터 DB에 저장
-          2. 홈페이지로 라우팅 
-          */}
         </div>
       </section>
     </main>
