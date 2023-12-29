@@ -1,98 +1,102 @@
-const UserDocument = require("../../models/userDocument");
-const Document = require("../../models/document");
-const asyncHandler = require("express-async-handler");
-module.exports = {
-  vaildDocumentId: asyncHandler(async (userId) => {
-    const usersDocument = await UserDocument.find(
-      { userId: userId, done: 0 },
-      { document_id: true }
-    );
-    return [...usersDocument];
-  }),
-  meetingMemberStatus: asyncHandler(async () => {
-    const documentList = await Document.find(
-      { done: 0 },
-      { _id: true }
-    ).populate("user_id", "_id");
+import { UserDocumentss, Documents } from "#src/models/index.js";
+import asyncHandler from "express-async-handler";
 
-    const result = {};
+const vaildDocumentsId = asyncHandler(async (userId) => {
+  const usersDocuments = await UserDocumentss.find(
+    { userId: userId, done: 0 },
+    { document_id: true }
+  );
+  return [...usersDocuments];
+});
 
-    documentList.forEach((document) => {
-      result[document._id] = {};
-      document.user_id.forEach((userDocument) => {
-        result[document._id][userDocument._id] = 0;
-      });
+const meetingMemberStatus = asyncHandler(async () => {
+  const documentList = await Documents.find(
+    { done: 0 },
+    { _id: true }
+  ).populate("user_id", "_id");
+
+  const result = {};
+
+  documentList.forEach((document) => {
+    result[document._id] = {};
+    document.user_id.forEach((userDocuments) => {
+      result[document._id][userDocuments._id] = 0;
     });
+  });
 
-    return result;
-  }),
+  return result;
+});
 
-  currentTime: function timestamp() {
-    const today = new Date();
-    today.setHours(today.getHours() + 9);
-    return today.toISOString().replace("T", " ").substring(0, 16);
-  },
+const findAllDocuments = async (queries) => {
+  const createor = await Documents.find({ _id: queries }).populate(
+    "user_id",
+    "_id nickname profile_img"
+  );
 
-  findAllDocument: async (queries) => {
-    const createor = await Document.find({ _id: queries }).populate(
-      "user_id",
-      "_id nickname profile_img"
-    );
+  const documenId = await Documents.find({ _id: queries }, { _id });
 
-    const documenId = await Document.find({ _id: queries }, { _id });
+  const partyUser = await UserDocumentss.find({ _id: documenId }).populate(
+    "user_id",
+    "_id nickname profile_img"
+  );
 
-    const partyUser = await UserDocument.find({ _id: documenId }).populate(
-      "user_id",
-      "_id nickname profile_img"
-    );
-
-    const documenList = [createor, partyUser];
-    return documenList.map((el) => {
-      const users = el.UserDocument.map((userInfo) => {
-        return userInfo.User;
-      });
-      delete el.UserDocument;
-      return { ...el, users };
+  const documenList = [createor, partyUser];
+  return documenList.map((el) => {
+    const users = el.UserDocumentss.map((userInfo) => {
+      return userInfo.User;
     });
-  },
+    delete el.UserDocumentss;
+    return { ...el, users };
+  });
+};
 
-  findDocument: async (queries) => {
-    return Document.findOne({ _id: queries });
-  },
+const findDocuments = async (queries) => {
+  return Documents.findOne({ _id: queries });
+};
 
-  findOrCreateUser_document: async (queries) => {
-    const userId = UserDocument.find({ queries }).populate("userId", "_id");
-    const documenId = UserDocument.find({ queries }).populate(
-      "documentId",
-      "_id"
-    );
+const findOrCreateUser_document = async (queries) => {
+  const userId = UserDocumentss.find({ queries }).populate("userId", "_id");
+  const documenId = UserDocumentss.find({ queries }).populate(
+    "documentId",
+    "_id"
+  );
 
-    return { userId, documenId };
-  },
+  return { userId, documenId };
+};
 
-  User_findDocument: async (queries) => {
-    return UserDocument.findOne({ queries });
-  },
+const User_findDocuments = async (queries) => {
+  return UserDocumentss.findOne({ queries });
+};
 
-  findUser: async (queries) => {
-    // const req = attributes.map((el) => `${el}:true`);
-    return await User.findOne({ _id: queries });
-  },
+const findUser = async (queries) => {
+  // const req = attributes.map((el) => `${el}:true`);
+  return await User.findOne({ _id: queries });
+};
 
-  modifyDocument: (documentLi) => {
-    const sortedDocumentList = documentLi
-      .reduce(
-        (acc, cur) => {
-          if (cur.currentNum >= cur.totalNum) {
-            acc[1].push(cur);
-            return acc;
-          }
-          acc[0].push(cur);
+const modifyDocuments = (documentLi) => {
+  const sortedDocumentsList = documentLi
+    .reduce(
+      (acc, cur) => {
+        if (cur.currentNum >= cur.totalNum) {
+          acc[1].push(cur);
           return acc;
-        },
-        [[], []]
-      )
-      .flat();
-    return sortedDocumentList; // 정보 각각 할당해줘야 될수도
-  },
+        }
+        acc[0].push(cur);
+        return acc;
+      },
+      [[], []]
+    )
+    .flat();
+  return sortedDocumentsList; // 정보 각각 할당해줘야 될수도
+};
+
+export {
+  vaildDocumentsId,
+  meetingMemberStatus,
+  findAllDocuments,
+  findDocuments,
+  findOrCreateUser_document,
+  User_findDocuments,
+  findUser,
+  modifyDocuments,
 };
