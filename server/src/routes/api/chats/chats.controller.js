@@ -1,8 +1,5 @@
-const asyncHandler = require("express-async-handler");
-const User = require("../models/user");
-const Document = require("../models/document");
-const Chatting = require("../models/chatting");
-const Notification = require("../models/notification");
+import asyncHandler from "express-async-handler";
+import { Chats, Users, Documents, Notifications } from "#src/models/index.js";
 
 //채팅목록 받아오기
 //채팅방 입장
@@ -12,7 +9,7 @@ const Notification = require("../models/notification");
 //알림이랑 연동?
 //강퇴 => 나이트메어
 
-module.exports = {
+const controller = {
   chatList: asyncHandler(async (req, res) => {
     // 채팅방 목록
     res.status(200).json({});
@@ -27,3 +24,5 @@ module.exports = {
     // 채팅방 나가기
   }),
 };
+
+export default controller;

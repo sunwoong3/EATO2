@@ -1,5 +1,6 @@
-const mongoose = require("mongoose");
-const { Schema } = mongoose;
+import mongoose from "mongoose";
+import { Schema } from "mongoose";
+
 const DocumentSchema = new Schema({
   title: String,
   deliveryFee: Number,
@@ -29,4 +30,4 @@ const DocumentSchema = new Schema({
   updatedAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model("Document", DocumentSchema);
+mongoose.model("Documents", DocumentSchema);

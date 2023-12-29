@@ -1,6 +1,7 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 // type = ["welcome", "new", "ban", "join", "leave", "done", "notice"]
-const { Schema } = mongoose;
+import { Schema } from "mongoose";
+
 const {
   Types: { ObjectId },
 } = Schema;
@@ -103,4 +104,4 @@ notificationSchema.statics.removeUser = async function (userId) {
   await this.remove({ _id: userId });
 };
 
-module.exports = mongoose.model("Notification", notificationSchema);
+mongoose.model("Notifications", notificationSchema);

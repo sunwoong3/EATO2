@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const { Schema } = mongoose;
+import mongoose from "mongoose";
+import { Schema } from "mongoose";
 
 const chatSchema = new Schema({
   id: {
@@ -14,6 +14,7 @@ const chatSchema = new Schema({
     type: String,
   },
 });
+
 const chattingSchema = new Schema(
   {
     _id: {
@@ -57,4 +58,4 @@ chattingSchema.statics.removeChattingOfUser = async function (userId) {
   return;
 };
 
-module.exports = mongoose.model("Chatting", chattingSchema);
+mongoose.model("Chats", chattingSchema);

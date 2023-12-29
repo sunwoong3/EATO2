@@ -2,14 +2,17 @@
   "name": "eato",
   "version": "1.0.0",
   "description": "EATO ver.2",
-  "main": "app.js",
   "scripts": {
-    "start": "nodemon --experimental-modules --es-module-specifier-resolution=node app.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon src/app.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sunwoong3/EATO2.git"
+  },
+  "type": "module",
+  "imports": {
+    "#src/*": "./src/*",
+    "#assets/*": "./assets/*"
   },
   "dependencies": {
     "axios": "^1.6.3",

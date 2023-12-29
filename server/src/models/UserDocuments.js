@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 // 유저가 참여하고 있는 게시물 (채팅방의 게시물)
@@ -19,4 +19,6 @@ const userDocumentSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model("UserDocument", userDocumentSchema);
+const Chats = mongoose.model("UserDocuments", userDocumentSchema);
+
+export default Chats;
