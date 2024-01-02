@@ -19,27 +19,31 @@ controller.validEmail = asyncHandler(async (req, res) => {
 });
 
 // 회원가입
-// POST
-// user/signUp
 controller.createUser = asyncHandler(async (req, res) => {
-  console.log(req.body);
-  // const { email, password, nickname } = req.body;
+  const { email, phone, name, location, password, nickname } = req.body;
+  if (!email || !phone || !name || !location || !password || !nickname)
+    throw new Error("모든 항목을 입력해 주세요.");
 
-  // if (email && password && nickname) {
-  //   const user = new Users({
-  //     profile: { email, password },
-  //     nickname,
-  //   });
-  //   // Mongoose에 Mixed 유형의 값이 변경되었음을 알리려면 doc.markModified(path)방금 변경한 Mixed 유형에 대한 경로를 전달하는 를 호출해야 합니다.
-  //   user.markModified("profile");
-  //   // user.markModified("nickname");
-  //   await user.save();
+  const isEmail = Users.findOne({ email });
+  const isNickName = Users.findOne({ nickname });
+  const isPhone = Users.findOne({ phone });
 
-  //   res.status(201).json({ message: "회원가입에 성공했습니다." });
-  // } else {
-  //   res.status(400).json({ message: "모든 항목을 작성해 주세요." });
-  // }
-  return;
+  if (isEmail) throw new Error("중복된 이메일이 존재합니다.");
+  if (isNickName) throw new Error("중복된 닉네임이 존재합니다.");
+  if (isPhone) throw new Error("중복된 휴대폰 번호가 존재합니다.");
+
+  const user = await Users.create({
+    email,
+    phone,
+    name,
+    location,
+    password,
+    nickname,
+  });
+
+  if (!user) throw new Error("회원가입에 실패했습니다.");
+
+  res.status(200).send({ result: "success" });
 });
 
 // 로그인
@@ -47,7 +51,7 @@ controller.createUser = asyncHandler(async (req, res) => {
 // user/login
 controller.userLogin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  const user = await Users.findOne({ "profile.email": email });
+  const user = await Users.findOne({ email });
   const token = tokens.generateToken(user._id);
 
   if (!user) {

@@ -10,10 +10,6 @@ router.post("/login", controller.userLogin);
 router.get("/logout", protect, controller.logout);
 router.get("/:kana", controller.socialLogin);
 
-router.get("/", (req, res) => {
-  res.send(200);
-});
-
 // router
 //   .route("/userInfo")
 //   .patch(protect, controller.updateProfile)
