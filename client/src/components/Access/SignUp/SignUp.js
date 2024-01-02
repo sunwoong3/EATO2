@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Logo from "images/logo-signup.png";
 import ForkW from "images/fork_white.png";
 import ForkR from "images/fork_red.png";
-import SocialLogBtn from "./SocialLogBtn";
+// import SocialLogBtn from "./SocialLogBtn";
 import api from "api";
 
 function SignUp() {
@@ -13,8 +13,6 @@ function SignUp() {
   };
 
   const handleChangeUpdateUser = async (key, value) => {
-    console.log({ key });
-    console.log({ value });
     const newInfo = {};
     newInfo[key] = value;
 
