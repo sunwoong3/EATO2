@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import crypto from "crypto";
-import bcrypt from "bcrypt";
 import { Schema } from "mongoose";
 
 const userSchema = new Schema(
@@ -19,7 +18,8 @@ const userSchema = new Schema(
   }
 );
 
-const encryptPwd = (user, next) => {
+userSchema.pre("save", function (next) {
+  const user = this;
   new Promise(async (resolve, reject) => {
     crypto.pbkdf2(
       user.password,
@@ -34,16 +34,14 @@ const encryptPwd = (user, next) => {
       }
     );
   });
-};
-
-userSchema.pre("save", function (next) {
-  const user = this;
-  encryptPwd(user, next);
 });
 
-userSchema.methods.matchPassword = async function (enteredPassword) {
-  const password = await bcrypt.compare(enteredPassword, this.password);
-  return password;
+userSchema.methods.matchPassword = async function (pwd, userPwd) {
+  const isValidPassword =
+    crypto
+      .pbkdf2Sync(pwd, process.env.SALT_VALUE, 100000, 64, "sha512")
+      .toString("base64") === userPwd;
+  return isValidPassword;
 };
 
 const User = mongoose.model("User", userSchema);

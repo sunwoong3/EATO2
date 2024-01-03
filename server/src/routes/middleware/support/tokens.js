@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken";
 
 // 토큰 생성
-const generateToken = (userId) => {
-  return jwt.sign({ userId }, process.env.JWT_SECRET_KEY, {
-    expiresIn: "7d",
+const generateToken = (email) => {
+  return jwt.sign({ email }, process.env.JWT_SECRET_KEY, {
+    expiresIn: "1d",
   });
 };
 

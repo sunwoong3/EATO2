@@ -4,20 +4,6 @@ import { oAuth, tokens } from "#src/routes/middleware/support/index.js";
 import { decryptPwd } from "#src/utils/crypto.js";
 
 const controller = {};
-// 사용가능한 이메일인지 확인
-// POST
-// user/signUp
-controller.validEmail = asyncHandler(async (req, res) => {
-  const { email } = req.body;
-
-  const alreadyEmail = await User.findOne({ "profile.email": email });
-
-  if (alreadyEmail) {
-    res.status(401).json({ message: "존재하는 이메일 입니다." });
-  } else {
-    res.status(200).send({ message: "사용가능한 이메일 입니다." });
-  }
-});
 
 // 회원가입
 controller.createUser = asyncHandler(async (req, res) => {
@@ -50,32 +36,18 @@ controller.createUser = asyncHandler(async (req, res) => {
 });
 
 // 로그인
-// POST
-// user/login
 controller.userLogin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
+  if (!email || !password) throw new Error("모든 항목을 입력해 주세요");
   const user = await User.findOne({ email });
-  const token = tokens.generateToken(user._id);
+  const isPassword = await user.matchPassword(password, user.password);
 
-  if (!user) {
-    res.status(401).json({ message: "이메일을 확인해주세요." });
-    return;
-  }
+  if (!user) throw new Error("존재하지 않는 유저입니다.");
+  if (!isPassword) throw new Error("비밀번호를 확인해주세요.");
 
-  if (!user.profile.password) {
-    res.status(401).json({ message: "존재하지 않는 유저입니다." });
-    return;
-  }
+  const token = tokens.generateToken(email);
 
-  if (await user.matchPassword(password)) {
-    res.json({
-      _id: user._id,
-      nickname: user.nickname,
-      cookie: sendAccessToken(res, token),
-    });
-  } else {
-    res.status(401).json({ message: "비밀번호를 확인해주세요." });
-  }
+  res.status(200).send({ result: "success", token });
 });
 
 // 로그아웃
