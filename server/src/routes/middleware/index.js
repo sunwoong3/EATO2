@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { Users } from "#src/models/index.js";
+import { User } from "#src/models/index.js";
 
 // 로그인 유저만 private route 접근을 허락해주는 함수
 // 토큰 정보를 받아서 해독하고 검증한다.
@@ -11,7 +11,7 @@ const protect = async (req, res, next) => {
   const token = authorization.jwt;
   try {
     const decoded = jwt.verify(token, process.env.ACCESS_SECRET);
-    req.user = await Users.findById(decoded.id).select(
+    req.user = await User.findById(decoded.id).select(
       "-profile.password  -naver.accessToken -kakao.accessToken -naver.refreshToken -kakao.refreshToken"
     );
     res.locals.userId = decoded.id;
@@ -34,7 +34,7 @@ export default protect;
 //     const token = authorization.jwt;
 //     try {
 //       const decoded = jwt.verify(token, process.env.ACCESS_SECRET);
-//       req.user = await Users.findById(decoded.id).select(
+//       req.user = await User.findById(decoded.id).select(
 //         "-profile.password  -naver.accessToken -kakao.accessToken -naver.refreshToken -kakao.refreshToken"
 //       );
 //       res.locals.userId = decoded.id;

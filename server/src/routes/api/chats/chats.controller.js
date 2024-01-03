@@ -1,5 +1,5 @@
 import asyncHandler from "express-async-handler";
-import { Chats, Users, Documents, Notifications } from "#src/models/index.js";
+import { Chat, User, Document, Notification } from "#src/models/index.js";
 
 //채팅목록 받아오기
 //채팅방 입장
