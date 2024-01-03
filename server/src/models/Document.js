@@ -30,4 +30,5 @@ const DocumentSchema = new Schema({
   updatedAt: { type: Date, default: Date.now },
 });
 
-mongoose.model("Documents", DocumentSchema);
+const Document = mongoose.model("Document", DocumentSchema);
+export default Document;

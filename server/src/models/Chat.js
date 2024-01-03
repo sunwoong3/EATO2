@@ -58,4 +58,5 @@ chattingSchema.statics.removeChattingOfUser = async function (userId) {
   return;
 };
 
-mongoose.model("Chats", chattingSchema);
+const Chat = mongoose.model("Chat", chattingSchema);
+export default Chat;

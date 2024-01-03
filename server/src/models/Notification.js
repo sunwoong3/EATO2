@@ -104,4 +104,5 @@ notificationSchema.statics.removeUser = async function (userId) {
   await this.remove({ _id: userId });
 };
 
-mongoose.model("Notifications", notificationSchema);
+const Notification = mongoose.model("Notification", notificationSchema);
+export default Notification;

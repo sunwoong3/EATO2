@@ -19,6 +19,6 @@ const userDocumentSchema = new Schema({
   },
 });
 
-const Chats = mongoose.model("UserDocuments", userDocumentSchema);
+const UserDocument = mongoose.model("UserDocument", userDocumentSchema);
 
-export default Chats;
+export default UserDocument;
