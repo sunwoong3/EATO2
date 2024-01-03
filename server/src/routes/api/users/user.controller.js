@@ -1,6 +1,7 @@
 import asyncHandler from "express-async-handler";
-import { Users } from "#src/models/index.js";
+import { User } from "#src/models/index.js";
 import { oAuth, tokens } from "#src/routes/middleware/support/index.js";
+import { decryptPwd } from "#src/utils/crypto.js";
 
 const controller = {};
 // 사용가능한 이메일인지 확인
@@ -9,7 +10,7 @@ const controller = {};
 controller.validEmail = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
-  const alreadyEmail = await Users.findOne({ "profile.email": email });
+  const alreadyEmail = await User.findOne({ "profile.email": email });
 
   if (alreadyEmail) {
     res.status(401).json({ message: "존재하는 이메일 입니다." });
@@ -24,20 +25,22 @@ controller.createUser = asyncHandler(async (req, res) => {
   if (!email || !phone || !name || !location || !password || !nickname)
     throw new Error("모든 항목을 입력해 주세요.");
 
-  const isEmail = Users.findOne({ email });
-  const isNickName = Users.findOne({ nickname });
-  const isPhone = Users.findOne({ phone });
+  const isEmail = await User.findOne({ email });
+  const isNickName = await User.findOne({ nickname });
+  const isPhone = await User.findOne({ phone });
 
-  if (isEmail) throw new Error("중복된 이메일이 존재합니다.");
-  if (isNickName) throw new Error("중복된 닉네임이 존재합니다.");
-  if (isPhone) throw new Error("중복된 휴대폰 번호가 존재합니다.");
+  if (isEmail !== null) throw new Error("중복된 이메일이 존재합니다.");
+  if (isNickName !== null) throw new Error("중복된 닉네임이 존재합니다.");
+  if (isPhone !== null) throw new Error("중복된 휴대폰 번호가 존재합니다.");
 
-  const user = await Users.create({
+  const decrypt = decryptPwd(password);
+
+  const user = await User.create({
     email,
     phone,
     name,
     location,
-    password,
+    password: decrypt,
     nickname,
   });
 
@@ -51,7 +54,7 @@ controller.createUser = asyncHandler(async (req, res) => {
 // user/login
 controller.userLogin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  const user = await Users.findOne({ email });
+  const user = await User.findOne({ email });
   const token = tokens.generateToken(user._id);
 
   if (!user) {
@@ -92,7 +95,7 @@ controller.socialLogin = asyncHandler(async (req, res) => {
 
   const options = oAuth.getOption(kana, code);
   const token = await tokens.generateToken(options, "authorization_code");
-  const userInfo = await oAuth.getUsersInfo(kana, options.userInfo_url, token);
+  const userInfo = await oAuth.getUserInfo(kana, options.userInfo_url, token);
 
   let uuid;
   let email;
@@ -111,7 +114,7 @@ controller.socialLogin = asyncHandler(async (req, res) => {
   // DB와 연락하기
   const { access_token, refresh_token } = token;
   const cookie = sendAccessToken(res, access_token);
-  const user = await Users.findOneAndUpdate(
+  const user = await User.findOneAndUpdate(
     {
       [`${kana}.uuid`]: uuid,
     },
@@ -130,7 +133,7 @@ controller.socialLogin = asyncHandler(async (req, res) => {
       cookie,
     });
   } else {
-    const newUsers = new Users({
+    const newUser = new User({
       [`${kana}.uuid`]: uuid,
       [`${kana}.email`]: email,
       [`${kana}.accessToken`]: access_token,
@@ -138,10 +141,10 @@ controller.socialLogin = asyncHandler(async (req, res) => {
       nickname,
     });
 
-    await newUsers.save();
+    await newUser.save();
     res.json({
-      _id: newUsers._id,
-      nickname: newUsers.nickname,
+      _id: newUser._id,
+      nickname: newUser.nickname,
       cookie,
     });
   }
@@ -155,7 +158,7 @@ controller.updateProfile = asyncHandler(async (req, res) => {
   const toekn = generateAccessToken(req.user._id);
   const cookie = sendAccessToken(res, toekn);
   if (nickname && location) {
-    await Users.findByIdAndUpdate(
+    await User.findByIdAndUpdate(
       req.user._id,
       { nickname: nickname, location: location },
       {
@@ -176,11 +179,11 @@ controller.updateProfile = asyncHandler(async (req, res) => {
 // 회원 탈퇴
 // DELETE
 // user/userInfo
-controller.deleteUsers = asyncHandler(async (req, res) => {
+controller.deleteUser = asyncHandler(async (req, res) => {
   // 유저 본인이 탈퇴 요청
-  const user = await Users.findById(req.user._id);
+  const user = await User.findById(req.user._id);
   if (user.profile.email) {
-    await Users.updateOne(
+    await User.updateOne(
       { _id: req.user._id },
       {
         $unset: { "profile.password": 1 },
@@ -209,7 +212,7 @@ controller.deleteUsers = asyncHandler(async (req, res) => {
   if (revokeRes.data.result === "success" && kana === "naver") {
     message = "네이버 계정과 연결 끊기 완료";
   }
-  await Users.updateOne(
+  await User.updateOne(
     { _id: req.user._id },
     {
       $unset: {
