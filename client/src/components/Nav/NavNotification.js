@@ -1,10 +1,10 @@
 import React from "react";
 import { useRecoilState } from "recoil";
-import NavState from "../../states/NavState";
+import NavState from "states/NavState";
 import { FaBell } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { BsDot } from "react-icons/bs";
-import Profile from "../../images/noti-profile.png";
+import Profile from "images/noti-profile.png";
 
 export default function NavNotificationModal() {
   const [isNotiClicked, setIsNotiClicked] = useRecoilState(NavState);
@@ -14,8 +14,8 @@ export default function NavNotificationModal() {
   return (
     <div className="noti-container">
       <FaBell
-        size="24"
-        className="user-button"
+        size="1.5rem"
+        className="noti-button"
         onClick={HandleClickNoti}
       ></FaBell>
 
