@@ -39,15 +39,17 @@ controller.createUser = asyncHandler(async (req, res) => {
 controller.userLogin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) throw new Error("모든 항목을 입력해 주세요");
+
   const user = await User.findOne({ email });
-  const isPassword = await user.matchPassword(password, user.password);
+  const decrypt = decryptPwd(password);
+  const isPassword = await user.matchPassword(decrypt, user.password);
 
   if (!user) throw new Error("존재하지 않는 유저입니다.");
   if (!isPassword) throw new Error("비밀번호를 확인해주세요.");
 
   const token = tokens.generateToken(email);
 
-  res.status(200).send({ result: "success", token });
+  res.status(200).json({ result: "success", token });
 });
 
 // 로그아웃
@@ -55,7 +57,7 @@ controller.userLogin = asyncHandler(async (req, res) => {
 // user/logout
 controller.logout = asyncHandler(async (req, res) => {
   res.clearCookie();
-  res.status(200).send("로그아웃에 성공했습니다.");
+  res.status(200).json("로그아웃에 성공했습니다.");
 });
 
 // 소셜 로그인
