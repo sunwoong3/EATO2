@@ -1,6 +1,6 @@
 import asyncHandler from "express-async-handler";
 import { User } from "#src/models/index.js";
-import { oAuth, tokens } from "#src/routes/middleware/support/index.js";
+import { oAuth, tokens } from "#src/utils/auth/index.js";
 import { decryptPwd } from "#src/utils/crypto.js";
 
 const controller = {};
