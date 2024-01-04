@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import IsLoginState from "states/IsLoginState";
 import { useRecoilState } from "recoil";
 import axios from "axios";
+import api from "api/index";
 import Logo from "images/logo-signup.png";
 import ForkW from "images/fork_white.png";
 import ForkR from "images/fork_red.png";
@@ -12,7 +13,6 @@ import SocialLogBtn from "components/Access/SignUp/SocialLogBtn";
 axios.defaults.withCredentials = true;
 
 const SignIn = () => {
-  // true
   const navigate = useNavigate();
   const {
     register,
@@ -20,7 +20,6 @@ const SignIn = () => {
     watch,
     formState: { errors },
   } = useForm();
-  // console.log(watch("password"));
 
   // 유효성 검사
   const emailExp =
@@ -28,42 +27,25 @@ const SignIn = () => {
   let pwdExp =
     /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,16}$/;
 
-  // Input창 passwordCheck (비밀번호 확인)에서 사용됨
   const password = useRef();
   password.current = watch("password");
 
-  const config = {
-    "Content-Type": "application/json",
-  };
   const [errMsg, setErrMsg] = useState("");
-  // recoil 전역상태 false
   const [isLogin, setIsLogin] = useRecoilState(IsLoginState);
 
-  const onSubmit = (data) => {
-    axios
-      .post(
-        `${process.env.REACT_APP_API_URL}/user/login`,
-        { email: data.email, password: data.password },
-        config
-      )
-      .then((res) => {
-        const matchInfo = res.data.message;
-        // const loginFalse = res.data.loginSuccess;
-        if (
-          matchInfo === "존재하지 않는 아이디입니다." ||
-          matchInfo === "비밀번호가 일치하지 않습니다."
-        ) {
-          setErrMsg(matchInfo, isLogin);
-        } else {
-          // 로그인 시
-          // 로컬스토리지에 쿠키 저장, recoil 전역 로그인 상태 true로 변환
-          localStorage.setItem("token", res.data.accessToken);
-          localStorage.setItem("userId", res.data.userId);
-          localStorage.setItem("nickname", res.data.nickname);
-          setIsLogin(true);
-          navigate("/home");
-        }
-      });
+  const onSubmit = async (user) => {
+    try {
+      let { data } = await api.users.login(user);
+      if (data?.result !== "success") {
+        throw new Error("로그인에 실패했습니다.");
+      } else {
+        localStorage.setItem("token", data.token);
+        setIsLogin(true);
+        navigate("/home");
+      }
+    } catch (err) {
+      setErrMsg(err.message, isLogin);
+    }
   };
 
   return (

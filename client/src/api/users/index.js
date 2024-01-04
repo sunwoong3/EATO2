@@ -5,7 +5,16 @@ const API_URL = `${process.env.REACT_APP_API_URL}/v2/users`;
 
 export const signUp = async (data) => {
   try {
-    await axios.post(`${API_URL}/signUp`, encryptPwd(data), { data });
+    const headers = {
+      "Content-Type": "application/json",
+    };
+    let res = await axios.post(
+      `${API_URL}/signUp`,
+      encryptPwd(data),
+      { data },
+      headers
+    );
+    return res;
   } catch (err) {
     console.log(err.message);
   }
@@ -13,7 +22,11 @@ export const signUp = async (data) => {
 
 export const login = async (data) => {
   try {
-    await axios.post(`${API_URL}/login`, { data });
+    const headers = {
+      "Content-Type": "application/json",
+    };
+    let res = await axios.post(`${API_URL}/login`, encryptPwd(data), headers);
+    return res;
   } catch (err) {
     console.log(err.message);
   }
@@ -21,7 +34,11 @@ export const login = async (data) => {
 
 export const logout = async (data) => {
   try {
-    await axios.post(`${API_URL}/logout`, { data });
+    const headers = {
+      "Content-Type": "application/json",
+    };
+    let res = await axios.post(`${API_URL}/logout`, { data }, headers);
+    return res;
   } catch (err) {
     console.log(err.message);
   }
