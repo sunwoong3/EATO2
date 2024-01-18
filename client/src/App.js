@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Landing from "pages/Landing";
 import SignIn from "pages/SignInPage";
@@ -12,18 +12,35 @@ import RedirectNaver from "components/OAuth/RedirectNaver";
 import { socket } from "./socket";
 
 function App() {
-  socket.on("connect", () => {
-    console.log("connect");
-  });
+  const [isConnected, setIsConnected] = useState(socket.connected);
 
-  socket.io.on("error", (error) => {
-    console.log(error, "ERROR");
-  });
+  const onConnect = () => {
+    console.log("success connect");
+    setIsConnected(true);
+  };
+  const onDisconnect = () => {
+    console.log("disconnected");
+    setIsConnected(false);
+  };
+  const socketError = (error) => {
+    console.log(`ERROR: ${error}`);
+  };
+
+  useEffect(() => {
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
+    socket.io.on("error", socketError);
+
+    return () => {
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
+    };
+  }, []);
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Landing />} />
+        <Route path="/" element={<Landing isConnected={isConnected} />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/mypage" element={<MyPage />} />
