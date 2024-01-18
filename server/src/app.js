@@ -3,15 +3,24 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import routes from "#src/routes/index.js";
 import cors from "cors";
+import { createServer } from "http";
 
 import { socket } from "./socket.js";
 
 dotenv.config();
 
 const app = express();
-const socketOptions = {};
+const httpServer = createServer(app);
+
+const socketOptions = {
+  cors: {
+    origin: "*",
+    credentials: true,
+    methods: ["GET", "POST"],
+  },
+};
 const corsOption = {
-  origin: "http://localhost:3002",
+  origin: "*",
   credentials: true,
 };
 
@@ -27,8 +36,8 @@ await mongoose
   .then(() => console.log("Successfully connected to mongodb"))
   .catch((e) => console.error(e));
 
-let server = app.listen(PORT, () => {
+socket(httpServer, socketOptions, app);
+
+httpServer.listen(PORT, () => {
   console.log(`EATO2 listening on PORT ${PORT}`);
 });
-
-socket(server, socketOptions, app);
