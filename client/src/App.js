@@ -9,7 +9,17 @@ import Map from "pages/Map";
 import ChatRoom from "pages/ChatRoom";
 import RedirectKakao from "components/OAuth/RedirectKakao";
 import RedirectNaver from "components/OAuth/RedirectNaver";
+import { socket } from "./socket";
+
 function App() {
+  socket.on("connect", () => {
+    console.log("connect");
+  });
+
+  socket.io.on("error", (error) => {
+    console.log(error, "ERROR");
+  });
+
   return (
     <BrowserRouter>
       <Routes>
